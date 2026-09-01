@@ -1,0 +1,22 @@
+[
+  {
+    "id": "SH-001",
+    "name": "Emergency Shelter Lagos Island",
+    "location": "Lagos Island",
+    "latitude": 6.455,
+    "longitude": 3.395,
+    "capacity": 500,
+    "occupied": 280,
+    "status": "Open"
+  },
+  {
+    "id": "SH-002",
+    "name": "Emergency Shelter Ikeja",
+    "location": "Ikeja",
+    "latitude": 6.6018,
+    "longitude": 3.3515,
+    "capacity": 300,
+    "occupied": 120,
+    "status": "Open"
+  }
+]
