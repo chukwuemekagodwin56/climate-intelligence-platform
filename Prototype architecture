@@ -1,0 +1,25 @@
+Climate Intelligence Platform
+│
+├── Frontend
+│   ├── Dashboard
+│   ├── Risk Map
+│   ├── Weather
+│   ├── Disaster Incidents
+│   ├── Field Reports
+│   ├── Shelters
+│   └── Alerts
+│
+├── Backend
+│   ├── Climate API
+│   ├── Risk API
+│   ├── Disaster API
+│   ├── Field Report API
+│   └── Alert API
+│
+└── Data
+    ├── Rainfall
+    ├── Temperature
+    ├── Humidity
+    ├── Soil Moisture
+    ├── Flood Events
+    └── Locations
