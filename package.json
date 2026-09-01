@@ -1,0 +1,13 @@
+{
+  "name": "climate-intelligence-platform",
+  "version": "1.0.0",
+  "description": "Climate Intelligence and Disaster Management Platform MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
