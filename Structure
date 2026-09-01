@@ -1,0 +1,25 @@
+climate-intelligence-platform/
+│
+├── server.js
+├── package.json
+│
+├── data/
+│   ├── climate.json
+│   ├── disasters.json
+│   ├── shelters.json
+│   └── reports.json
+│
+└── public/
+    ├── index.html
+    ├── dashboard.html
+    ├── reports.html
+    ├── shelters.html
+    ├── alerts.html
+    │
+    ├── css/
+    │   └── style.css
+    │
+    └── js/
+        ├── dashboard.js
+        ├── map.js
+        └── reports.js
