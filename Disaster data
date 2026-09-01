@@ -1,0 +1,35 @@
+[
+  {
+    "id": "FLD-001",
+    "type": "Flood",
+    "location": "Lagos Island",
+    "latitude": 6.4541,
+    "longitude": 3.3947,
+    "severity": "High",
+    "date": "2026-08-27",
+    "affectedPeople": 1250,
+    "status": "Active"
+  },
+  {
+    "id": "FLD-002",
+    "type": "Flood",
+    "location": "Lekki",
+    "latitude": 6.4698,
+    "longitude": 3.5852,
+    "severity": "Medium",
+    "date": "2026-08-26",
+    "affectedPeople": 540,
+    "status": "Monitoring"
+  },
+  {
+    "id": "DRT-001",
+    "type": "Heavy Rainfall",
+    "location": "Ikeja",
+    "latitude": 6.6018,
+    "longitude": 3.3515,
+    "severity": "Medium",
+    "date": "2026-08-27",
+    "affectedPeople": 320,
+    "status": "Resolved"
+  }
+]
