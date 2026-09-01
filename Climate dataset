@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2026-08-25",
+    "location": "Lagos",
+    "latitude": 6.5244,
+    "longitude": 3.3792,
+    "rainfall": 72,
+    "temperature": 29,
+    "humidity": 82,
+    "windSpeed": 14,
+    "soilMoisture": 68,
+    "riverLevel": 3.2
+  },
+  {
+    "date": "2026-08-26",
+    "location": "Lagos",
+    "latitude": 6.5244,
+    "longitude": 3.3792,
+    "rainfall": 95,
+    "temperature": 28,
+    "humidity": 86,
+    "windSpeed": 17,
+    "soilMoisture": 75,
+    "riverLevel": 3.7
+  },
+  {
+    "date": "2026-08-27",
+    "location": "Lagos",
+    "latitude": 6.5244,
+    "longitude": 3.3792,
+    "rainfall": 118,
+    "temperature": 27,
+    "humidity": 89,
+    "windSpeed": 19,
+    "soilMoisture": 84,
+    "riverLevel": 4.2
+  }
+]
