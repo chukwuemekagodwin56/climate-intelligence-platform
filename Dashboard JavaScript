@@ -1,0 +1,292 @@
+let climateData = [];
+let disasters = [];
+
+
+/* -----------------------------
+   LOAD CLIMATE DATA
+------------------------------ */
+
+async function loadClimate() {
+
+    const response =
+        await fetch("/api/climate");
+
+    const result =
+        await response.json();
+
+    climateData = result.data;
+
+    const latest =
+        climateData[climateData.length - 1];
+
+    document.getElementById("rainfall")
+        .textContent =
+        `${latest.rainfall} mm`;
+
+    document.getElementById("temperature")
+        .textContent =
+        `${latest.temperature} °C`;
+
+    createClimateChart();
+
+}
+
+
+/* -----------------------------
+   LOAD DISASTERS
+------------------------------ */
+
+async function loadDisasters() {
+
+    const response =
+        await fetch("/api/disasters");
+
+    const result =
+        await response.json();
+
+    disasters = result.data;
+
+    document.getElementById("incidents")
+        .textContent =
+        disasters.filter(
+            d => d.status === "Active"
+        ).length;
+
+    createIncidentTable();
+
+    createMap();
+
+}
+
+
+/* -----------------------------
+   LOAD RISK
+------------------------------ */
+
+async function loadRisk() {
+
+    const response =
+        await fetch("/api/risk");
+
+    const result =
+        await response.json();
+
+    document.getElementById("floodRisk")
+        .textContent =
+        `${result.floodRiskScore}%`;
+
+    document.getElementById("riskDescription")
+        .textContent =
+        `${result.riskLevel} FLOOD RISK`;
+
+    document.getElementById("riskFactors")
+        .innerHTML = `
+
+        <div class="risk-item">
+            <span>Rainfall</span>
+            <strong>
+                ${result.factors.rainfall} mm
+            </strong>
+        </div>
+
+        <div class="risk-item">
+            <span>Soil Moisture</span>
+            <strong>
+                ${result.factors.soilMoisture}%
+            </strong>
+        </div>
+
+        <div class="risk-item">
+            <span>River Level</span>
+            <strong>
+                ${result.factors.riverLevel} m
+            </strong>
+        </div>
+
+    `;
+}
+
+
+/* -----------------------------
+   CLIMATE CHART
+------------------------------ */
+
+function createClimateChart() {
+
+    const labels =
+        climateData.map(
+            item => item.date
+        );
+
+    const rainfall =
+        climateData.map(
+            item => item.rainfall
+        );
+
+    const temperature =
+        climateData.map(
+            item => item.temperature
+        );
+
+    new Chart(
+        document.getElementById(
+            "climateChart"
+        ),
+        {
+            type: "line",
+
+            data: {
+
+                labels,
+
+                datasets: [
+
+                    {
+                        label: "Rainfall (mm)",
+                        data: rainfall
+                    },
+
+                    {
+                        label: "Temperature (°C)",
+                        data: temperature
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false
+
+            }
+
+        }
+    );
+
+}
+
+
+/* -----------------------------
+   INCIDENT TABLE
+------------------------------ */
+
+function createIncidentTable() {
+
+    const table =
+        document.getElementById(
+            "incidentTable"
+        );
+
+    table.innerHTML = "";
+
+    disasters.forEach(
+        disaster => {
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>${disaster.id}</td>
+
+                <td>${disaster.type}</td>
+
+                <td>${disaster.location}</td>
+
+                <td>
+                    <span class="badge">
+                        ${disaster.severity}
+                    </span>
+                </td>
+
+                <td>
+                    ${disaster.status}
+                </td>
+
+            `;
+
+            table.appendChild(row);
+
+        }
+    );
+
+}
+
+
+/* -----------------------------
+   MAP
+------------------------------ */
+
+function createMap() {
+
+    const map =
+        L.map("map")
+        .setView(
+            [6.5244, 3.3792],
+            10
+        );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution:
+                "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+
+    disasters.forEach(
+        disaster => {
+
+            L.marker([
+                disaster.latitude,
+                disaster.longitude
+            ])
+            .addTo(map)
+            .bindPopup(`
+
+                <strong>
+                    ${disaster.type}
+                </strong>
+
+                <br>
+
+                Location:
+                ${disaster.location}
+
+                <br>
+
+                Severity:
+                ${disaster.severity}
+
+                <br>
+
+                Affected:
+                ${disaster.affectedPeople}
+
+            `);
+
+        }
+    );
+
+}
+
+
+/* -----------------------------
+   INITIALIZE
+------------------------------ */
+
+async function initialize() {
+
+    await loadClimate();
+
+    await loadDisasters();
+
+    await loadRisk();
+
+}
+
+initialize();
