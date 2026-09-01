@@ -1,0 +1,199 @@
+1. Cloud Architecture
+                    USERS
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+     Web Dashboard           Mobile/Field App
+          │                       │
+          └───────────┬───────────┘
+                      │
+                      ▼
+              Azure Front Door
+                / WAF Layer
+                      │
+                      ▼
+              Application Layer
+           ┌─────────────────────┐
+           │ Azure App Service   │
+           │ Node.js / API       │
+           └──────────┬──────────┘
+                      │
+            ┌─────────┼─────────┐
+            │         │         │
+            ▼         ▼         ▼
+       Climate API  Risk API  Alert API
+            │         │         │
+            └─────────┼─────────┘
+                      │
+                      ▼
+             Data / Analytics Layer
+        ┌─────────────┼──────────────┐
+        │             │              │
+        ▼             ▼              ▼
+ Azure PostgreSQL   Blob Storage   Data Processing
+   + PostGIS        / Data Lake       / Analytics
+        │             │              │
+        └─────────────┼──────────────┘
+                      │
+                      ▼
+               Monitoring Layer
+        ┌────────────────────────────┐
+        │ Azure Monitor              │
+        │ Application Insights       │
+        │ Log Analytics              │
+        └────────────────────────────┘
+
+       Security / Identity / Backup
+        ┌────────────────────────────┐
+        │ Microsoft Entra ID         │
+        │ Key Vault                  │
+        │ RBAC                       │
+        │ Backup                     │
+        │ Disaster Recovery          │
+        └────────────────────────────┘
+This architecture supports the platform's intended functions while allowing the infrastructure to scale as climate, weather, satellite and disaster data volumes increase.
+
+2. Database Requirements
+The platform will have two broad categories of data.
+A. Operational Data
+Examples:
+Users
+Government agencies
+Emergency responders
+Disaster incidents
+Field reports
+Shelters
+Evacuation routes
+Alerts
+Damage assessments
+B. Climate/GIS Data
+Examples:
+Rainfall
+Temperature
+Humidity
+Wind
+Soil moisture
+River levels
+Historical flood events
+Satellite-derived information
+Elevation
+Land cover
+Geographic boundaries
+
+Recommended Database:
+Azure Database for PostgreSQL + PostGIS
+
+PostGIS is particularly important because the platform is expected to provide GIS/risk maps, locations, flood zones and spatial analysis.
+
+Example:
+PostgreSQL
+│
+├── users
+├── organizations
+├── disaster_events
+├── field_reports
+├── damage_assessments
+├── shelters
+├── alerts
+│
+├── climate_observations
+├── rainfall
+├── temperature
+├── soil_moisture
+├── river_levels
+│
+└── spatial_layers
+    ├── flood_zones
+    ├── roads
+    ├── hospitals
+    ├── schools
+    └── administrative_boundaries
+
+Initial database sizing
+For the MVP, start small and design for scaling.
+The Cloud Engineer should determine:
+.CPU
+.RAM
+.Storage
+.IOPS
+.Connection limits
+.Backup retention
+.Expected database growth
+The sizing should be based on the expected number of users, frequency of climate-data ingestion and volume of GIS/satellite data rather than arbitrarily choosing a large production SKU.
+
+3. Storage Requirements
+The platform will potentially generate very large datasets, especially from satellite imagery and field photographs.
+
+Therefore, do not store large images and files directly inside PostgreSQL.
+
+Use:
+Azure Blob Storage
+Suggested structure:
+climate-data/
+│
+├── rainfall/
+├── weather/
+├── satellite/
+├── soil-moisture/
+├── elevation/
+│
+├── disaster-data/
+│
+├── field-reports/
+├── damage-assessment/
+├── photographs/
+│
+└── backups/
+
+Database stores:
+Report ID
+File URL
+File Type
+Location
+Timestamp
+User
+Description
+
+Blob Storage stores:
+Satellite image
+Damage photograph
+Field attachment
+Report document
+Large climate dataset
+
+This keeps the database efficient while allowing the platform to accommodate large datasets.
+
+4. Compute Requirements
+The main compute workload will come from:
+Application workloads
+.Web dashboard
+.REST APIs
+.Mobile backend
+.Authentication
+.Disaster reporting
+.Alert processing
+
+Data workloads
+.Data ingestion
+.Data cleaning
+.Data transformation
+.Risk calculations
+.GIS processing
+.Analytical workloads
+.Flood-risk calculations
+.Drought analysis
+.Heat-risk analysis
+.Predictive modelling
+
+For Phase 1, I recommend:
+Azure App Service
+        │
+        ├── Web Application
+        └── REST API
+For heavier analytics later:
+Azure App Service
+        +
+Azure Functions / Container Apps
+        +
+Dedicated data-processing compute
+The important principle is not to run expensive analytical processing continuously on the web server.
