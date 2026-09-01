@@ -1,0 +1,11 @@
+[
+  {
+    "id": "RPT-001",
+    "location": "Lekki",
+    "incidentType": "Flood",
+    "severity": "High",
+    "description": "Flood water affecting residential properties.",
+    "status": "Submitted",
+    "createdAt": "2026-08-27T09:00:00Z"
+  }
+]
