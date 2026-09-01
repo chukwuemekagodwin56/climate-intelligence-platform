@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Climate Intelligence Platform</title>
+
+    <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+        🌍 Climate Intelligence
+    </div>
+
+    <nav>
+        <a href="index.html">Dashboard</a>
+        <a href="reports.html">Field Reports</a>
+        <a href="shelters.html">Shelters</a>
+        <a href="alerts.html">Alerts</a>
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <div>
+            <h1>
+                Climate Intelligence &
+                Disaster Management
+            </h1>
+
+            <p>
+                Monitor climate conditions, identify
+                disaster risks and support emergency
+                response decisions.
+            </p>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </div>
+
+    </section>
+
+
+    <!-- KPI CARDS -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <h3>Flood Risk</h3>
+
+            <div id="floodRisk"
+                class="metric">
+                Loading...
+            </div>
+
+            <p id="riskDescription">
+                Calculating...
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Rainfall</h3>
+
+            <div id="rainfall"
+                class="metric">
+                -- mm
+            </div>
+
+            <p>Latest observation</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Temperature</h3>
+
+            <div id="temperature"
+                class="metric">
+                -- °C
+            </div>
+
+            <p>Latest observation</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Active Incidents</h3>
+
+            <div id="incidents"
+                class="metric">
+                --
+            </div>
+
+            <p>Reported disasters</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAP -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h2>Disaster Risk Map</h2>
+
+            <span>
+                Live prototype
+            </span>
+
+        </div>
+
+        <div id="map"></div>
+
+    </section>
+
+
+    <!-- WEATHER -->
+
+    <section class="grid">
+
+        <div class="panel">
+
+            <h2>Climate Indicators</h2>
+
+            <canvas id="climateChart"></canvas>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>Risk Factors</h2>
+
+            <div id="riskFactors"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- INCIDENT TABLE -->
+
+    <section class="panel">
+
+        <h2>Recent Disaster Incidents</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="incidentTable"></tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="js/dashboard.js"></script>
+
+</body>
+
+</html>
