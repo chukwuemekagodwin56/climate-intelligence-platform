@@ -1,0 +1,223 @@
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+
+const app = express();
+
+const PORT = process.env.PORT || 8080;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(__dirname, "public")));
+
+const DATA_DIR = path.join(__dirname, "data");
+
+function readData(file) {
+    const filePath = path.join(DATA_DIR, file);
+
+    try {
+        return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    } catch (error) {
+        console.error(`Unable to read ${file}:`, error);
+        return [];
+    }
+}
+
+/* -----------------------------
+   HEALTH CHECK
+------------------------------ */
+
+app.get("/api/health", (req, res) => {
+    res.json({
+        status: "online",
+        service: "Climate Intelligence Platform",
+        timestamp: new Date().toISOString()
+    });
+});
+
+/* -----------------------------
+   CLIMATE DATA
+------------------------------ */
+
+app.get("/api/climate", (req, res) => {
+    const climate = readData("climate.json");
+
+    res.json({
+        success: true,
+        count: climate.length,
+        data: climate
+    });
+});
+
+/* -----------------------------
+   DISASTER EVENTS
+------------------------------ */
+
+app.get("/api/disasters", (req, res) => {
+    const disasters = readData("disasters.json");
+
+    res.json({
+        success: true,
+        count: disasters.length,
+        data: disasters
+    });
+});
+
+/* -----------------------------
+   SHELTERS
+------------------------------ */
+
+app.get("/api/shelters", (req, res) => {
+    const shelters = readData("shelters.json");
+
+    res.json({
+        success: true,
+        count: shelters.length,
+        data: shelters
+    });
+});
+
+/* -----------------------------
+   FIELD REPORTS
+------------------------------ */
+
+app.get("/api/reports", (req, res) => {
+    const reports = readData("reports.json");
+
+    res.json({
+        success: true,
+        count: reports.length,
+        data: reports
+    });
+});
+
+app.post("/api/reports", (req, res) => {
+
+    const reports = readData("reports.json");
+
+    const report = {
+        id: `RPT-${Date.now()}`,
+        ...req.body,
+        status: "Submitted",
+        createdAt: new Date().toISOString()
+    };
+
+    reports.push(report);
+
+    fs.writeFileSync(
+        path.join(DATA_DIR, "reports.json"),
+        JSON.stringify(reports, null, 2)
+    );
+
+    res.status(201).json({
+        success: true,
+        message: "Field report submitted successfully",
+        report
+    });
+});
+
+/* -----------------------------
+   RISK CALCULATION
+------------------------------ */
+
+app.get("/api/risk", (req, res) => {
+
+    const climate = readData("climate.json");
+
+    if (!climate.length) {
+        return res.json({
+            success: false,
+            message: "No climate data available"
+        });
+    }
+
+    const latest = climate[climate.length - 1];
+
+    let floodScore = 0;
+
+    if (latest.rainfall >= 100) {
+        floodScore += 40;
+    } else if (latest.rainfall >= 60) {
+        floodScore += 25;
+    } else if (latest.rainfall >= 30) {
+        floodScore += 10;
+    }
+
+    if (latest.soilMoisture >= 80) {
+        floodScore += 30;
+    } else if (latest.soilMoisture >= 60) {
+        floodScore += 20;
+    }
+
+    if (latest.riverLevel >= 4) {
+        floodScore += 30;
+    } else if (latest.riverLevel >= 3) {
+        floodScore += 20;
+    }
+
+    let level = "LOW";
+
+    if (floodScore >= 70) {
+        level = "HIGH";
+    } else if (floodScore >= 40) {
+        level = "MEDIUM";
+    }
+
+    res.json({
+        success: true,
+        floodRiskScore: floodScore,
+        riskLevel: level,
+        factors: {
+            rainfall: latest.rainfall,
+            soilMoisture: latest.soilMoisture,
+            riverLevel: latest.riverLevel
+        }
+    });
+});
+
+/* -----------------------------
+   ALERTS
+------------------------------ */
+
+app.post("/api/alerts", (req, res) => {
+
+    const alert = {
+        id: `ALT-${Date.now()}`,
+        message: req.body.message,
+        severity: req.body.severity || "INFO",
+        location: req.body.location || "Unknown",
+        createdAt: new Date().toISOString()
+    };
+
+    console.log("ALERT:", alert);
+
+    res.status(201).json({
+        success: true,
+        message: "Alert created successfully",
+        alert
+    });
+});
+
+/* -----------------------------
+   DEFAULT ROUTE
+------------------------------ */
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+/* -----------------------------
+   SERVER
+------------------------------ */
+
+app.listen(PORT, () => {
+    console.log(`
+========================================
+ Climate Intelligence Platform
+========================================
+ Server: http://localhost:${PORT}
+ API:    http://localhost:${PORT}/api/health
+========================================
+`);
+});
